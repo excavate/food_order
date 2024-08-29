@@ -14,6 +14,10 @@ const routes = [
     name:'ManageTest',
     component:UserManage
   },
+  {
+    path: '/manage/users',
+    component: UserManage,
+  },
 ]
 
 const router = createRouter({
