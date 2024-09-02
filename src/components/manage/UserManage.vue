@@ -1,43 +1,51 @@
 <template>
   <ManageLayout currentSection="用户管理">
     <!-- 用户管理的具体内容 -->
-    <el-row>
-      <el-col :span="8">
-        <el-input v-model="search.username" placeholder="用户名" />
-      </el-col>
-      <el-col :span="8">
-        <el-input v-model="search.phone" placeholder="手机号" />
-      </el-col>
-      <el-col :span="8">
-        <el-button type="primary" @click="onSearch">查询</el-button>
-        <el-button @click="onReset">重置</el-button>
-      </el-col>
-    </el-row>
+    <el-card>
+      <el-row gutter="10">
+        <el-col :span="8">
+          <el-input v-model="search.username" placeholder="用户名" />
+        </el-col>
+        <el-col :span="8">
+          <el-input v-model="search.phone" placeholder="手机号" />
+        </el-col>
+        <el-col :span="8">
+          <el-button type="primary" @click="onSearch">查询</el-button>
+          <el-button @click="onReset">重置</el-button>
+        </el-col>
+      </el-row>
+    </el-card>
 
-    <el-button type="primary" @click="addUser">新增用户</el-button>
-    <el-button type="danger" @click="deleteSelectedUsers">批量删除</el-button>
+    <el-card class="manage-table">
+      <div class="toolbar-wrapper">
+        <div>
+          <el-button type="primary" @click="addUser">新增用户</el-button>
+          <el-button type="danger" @click="deleteSelectedUsers">批量删除</el-button>
+        </div>
+      </div>
 
-    <el-table :data="userData" style="width: 100%" v-loading="loading">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="username" label="用户名" width="180"></el-table-column>
-      <el-table-column prop="role" label="角色" width="180"></el-table-column>
-      <el-table-column prop="phone" label="手机号" width="180"></el-table-column>
-      <el-table-column prop="email" label="邮箱" width="230"></el-table-column>
-      <el-table-column prop="status" label="状态" width="100">
-        <template v-slot="scope">
-          <el-tag :type="scope.row.status === '启用' ? 'success' : 'danger'">
-            {{ scope.row.status }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="200"></el-table-column>
-      <el-table-column label="操作" width="180">
-        <template v-slot="scope">
-          <el-button size="small" @click="editUser(scope.row)">修改</el-button>
-          <el-button size="small" type="danger" @click="deleteUser(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+      <el-table :data="userData" style="width: 100%" v-loading="loading">
+        <el-table-column type="selection" width="50" align="center"></el-table-column>
+        <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+        <el-table-column prop="role" label="角色" align="center"></el-table-column>
+        <el-table-column prop="phone" label="手机号" align="center"></el-table-column>
+        <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template #default="scope">
+              <el-tag v-if="scope.row.status" type="success" effect="plain">启用</el-tag>
+              <el-tag v-else type="danger" effect="plain">禁用</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+        <el-table-column label="操作" width="150" align="center">
+          <template v-slot="scope">
+            <el-button size="small" @click="editUser(scope.row)">修改</el-button>
+            <el-button size="small" type="danger" @click="deleteUser(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
   </ManageLayout>
 </template>
 
@@ -85,3 +93,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.toolbar-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.manage-table {
+  margin-top: 20px;
+
+}
+</style>
