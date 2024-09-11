@@ -19,7 +19,6 @@ app.use(ElementPlus, {
 });
 
 app.use(router);
-app.use(ElementPlus);
 router.isReady().then(() => {
     app.mount("#app")
   })
