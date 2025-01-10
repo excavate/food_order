@@ -29,7 +29,7 @@
         <el-table-column prop="name" label="菜品名称" align="center"></el-table-column>
         <el-table-column prop="image" label="图片" align="center" width="120">
           <template #default="scope">
-            <el-image :src="scope.row.image[0]?.url" class="preview-image" />
+            <el-image :src="scope.row.image.url" class="preview-image" />
           </template>
         </el-table-column>
         <el-table-column prop="category" label="分类" align="center"></el-table-column>
@@ -63,25 +63,33 @@
         <el-form-item label="图片">
           <el-upload
             ref="upload"
-            v-model:file-list="formData.image"
+            v-model:file-list="filesList"
             class="upload-demo"
             action=""
             :limit="1"
-            :before-upload="beforeUpload"
+            :on-change="handleChange"
             list-type="picture-card"
-            :on-remove="handleRemove"
-            :on-preview="handlePictureCardPreview"
-          >
+            :show-file-list="false"
+            :auto-upload="false"
+          >         
             <template #default>
               <el-image
-                v-if="formData.image.length > 0"
-                :src="formData.image[0].url"
+                v-if="filesList.length>0"
+                :src="filesList[0].url"
                 class="upload-image"
                 @click="triggerUpload"
               />
               <el-button type="primary" v-else>上传图片</el-button>
+              <el-icon class="el-icon--right" @click.stop="handlePreview(file)">
+              <ZoomIn />
+            </el-icon>
+            <el-icon class="el-icon--right" @click.stop="handleRemove(file)">
+              <Delete />
+            </el-icon>
+              
             </template>
           </el-upload>
+          <el-button type="primary" @click="console.log(filesList)">debug</el-button>
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="formData.category" placeholder="请选择分类">
@@ -100,17 +108,20 @@
 <script setup>
 import { ref, computed } from 'vue';
 import ManageLayout from '@/layouts/ManageLayout.vue';
+import { ZoomIn, Delete } from '@element-plus/icons-vue';
 
 const upload=ref();
 const loading=false;
+const formData = ref({ name: '', image: '', category: '' });
+const filesList=ref([]);
 // 搜索相关数据
 const search = ref({ name: '', category: '' });
 const categories = ref(['中餐', '西餐', '饮品']);
 
 // 菜品数据
 const dishData = ref([
-  { name: '宫保鸡丁', image: [{name:'1',url:'https://via.placeholder.com/50'}], category: '中餐' },
-  { name: '牛肉汉堡', image: [{name:'2',url:'https://via.placeholder.com/50'}], category: '西餐' },
+  { name: '宫保鸡丁', image: 'https://via.placeholder.com/50', category: '中餐' },
+  { name: '牛肉汉堡', image: 'https://via.placeholder.com/50', category: '西餐' },
 ]);
 
 // 分页数据
@@ -125,7 +136,7 @@ const paginationData = ref({
 // 对话框控制
 const dialogVisible = ref(false);
 const dialogTitle = ref('');
-const formData = ref({ name: '', image: [], category: '' });
+
 
 // 分页处理
 const paginatedData = computed(() => {
@@ -150,30 +161,13 @@ const saveDish = () => {
   }
   dialogVisible.value = false;
 };
-const beforeUpload = (file) => {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    formData.value.image = [
-          {
-            name: file.name, // 文件名称
-            url: e.target.result, // Base64 数据
-          },
-        ];
-  };
-  reader.readAsDataURL(file);
-  return false;
-};
 const triggerUpload = () => {
   upload.click();
 };
 
-const handleRemove = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
-  formData.value.image = [];
-}
 
-const handlePictureCardPreview = (uploadFile) => {
-  
+const handleChange = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
 }
 const handleCurrentChange = (newPage) => { paginationData.value.currentPage = newPage; };
 const handleSizeChange = (newSize) => { paginationData.value.pageSize = newSize; };
