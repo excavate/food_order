@@ -68,11 +68,11 @@
             action=""
             :limit="1"
             :on-change="handleChange"
-            list-type="picture-card"
             :show-file-list="false"
             :auto-upload="false"
-          >         
-            <template #default>
+          >     
+          <template #trigger><el-button type="primary" >上传图片</el-button></template>    
+            <!-- <template #default>
               <el-image
                 v-if="filesList.length>0"
                 :src="filesList[0].url"
@@ -80,15 +80,19 @@
                 @click="triggerUpload"
               />
               <el-button type="primary" v-else>上传图片</el-button>
+              <el-button type="primary" @click="test">调试</el-button>
               <el-icon class="el-icon--right" @click.stop="handlePreview(file)">
               <ZoomIn />
-            </el-icon>
+              </el-icon>
             <el-icon class="el-icon--right" @click.stop="handleRemove(file)">
               <Delete />
             </el-icon>
+            
               
-            </template>
+              
+            </template> -->
           </el-upload>
+          
           <el-button type="primary" @click="console.log(filesList)">debug</el-button>
         </el-form-item>
         <el-form-item label="分类">
@@ -150,6 +154,10 @@ const onSearch = () => { console.log('搜索功能未实现'); };
 const onReset = () => { search.value.name = ''; search.value.category = ''; };
 const deleteDish = (dish) => { console.log('删除菜品', dish); };
 const deleteSelectedDishes = () => { console.log('批量删除未实现'); };
+
+const test = () => {
+  console.log(filesList.value);
+}
 const openDialog = (type, dish = null) => {
   dialogTitle.value = type === 'add' ? '新增菜品' : '编辑菜品';
   formData.value = dish ? { ...dish } : { name: '', image: [], category: '' };
@@ -167,7 +175,9 @@ const triggerUpload = () => {
 
 
 const handleChange = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
+  console.log( {...uploadFile} ); // 创建对象的副本并打印
+  uploadFile.url = URL.createObjectURL(uploadFile.raw);
+  filesList.value.push(uploadFile);
 }
 const handleCurrentChange = (newPage) => { paginationData.value.currentPage = newPage; };
 const handleSizeChange = (newSize) => { paginationData.value.pageSize = newSize; };
