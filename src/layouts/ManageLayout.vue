@@ -4,26 +4,26 @@
     <el-container>
       <el-aside class="sidebar">
         <div class="logo"><a href=""><img src="#" alt="">logo</a></div>
-        <el-menu class="sidebar-menu">
-          <el-menu-item index="1">
+        <el-menu class="sidebar-menu" :default-active="$route.path" :router="true">
+          <el-menu-item index="/manage_test">
             <el-icon>
               <House />
             </el-icon>
             <span slot="title">首页</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="/manage/users" >
             <el-icon>
               <UserFilled />
             </el-icon>
             <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="#">
             <el-icon>
               <Dish />
             </el-icon>
             <span slot="title">菜品管理</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="#">
             <el-icon>
               <setting />
             </el-icon>
@@ -68,6 +68,9 @@ export default {
       type: String,
       required: true
     }
+  },
+  mounted() {
+    console.log(this.$route.path)
   }
 };
 </script>
